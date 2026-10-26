@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desconectina® · Presentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-hi:#FFFFFF; --bg-mid:#E7EDF5; --bg-lo:#D2DBE8;
+    --ink:#12203F; --ink-soft:#56627E; --brand:#0A3D91; --accent:#E07A12;
+    --line:rgba(18,32,63,.14); --chip:#FFFFFF; --chip-ink:#12203F; --track:rgba(18,32,63,.12);
+    color-scheme: light;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg-hi:#1A3466; --bg-mid:#0B1A38; --bg-lo:#050C1E;
+      --ink:#EEF2FA; --ink-soft:#9DA9C4; --brand:#8DB3F5; --accent:#F59A3E;
+      --line:rgba(238,242,250,.16); --chip:#15284D; --chip-ink:#EEF2FA; --track:rgba(238,242,250,.16);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg-hi:#1A3466; --bg-mid:#0B1A38; --bg-lo:#050C1E;
+    --ink:#EEF2FA; --ink-soft:#9DA9C4; --brand:#8DB3F5; --accent:#F59A3E;
+    --line:rgba(238,242,250,.16); --chip:#15284D; --chip-ink:#EEF2FA; --track:rgba(238,242,250,.16);
+    color-scheme: dark;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{
+    height:100%; margin:0; overflow:hidden;
+    background:var(--bg-mid);
+    background-image:radial-gradient(120% 90% at 70% 42%, var(--bg-hi) 0%, var(--bg-mid) 45%, var(--bg-lo) 100%);
+    color:var(--ink);
+    font-family:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  #scene{position:fixed; inset:0; width:100%; height:100%; display:block; cursor:pointer; touch-action:none}
+
+  .panel{
+    position:fixed; left:clamp(24px,6vw,104px); top:50%; transform:translateY(-54%);
+    width:min(40vw,500px); pointer-events:none;
+  }
+  .panel > *{transition:opacity .45s ease, transform .55s cubic-bezier(.2,.7,.2,1)}
+  .panel > :nth-child(2){transition-delay:.05s}
+  .panel > :nth-child(3){transition-delay:.1s}
+  .panel.out > *{opacity:0; transform:translateX(-14px); transition-delay:0s; transition-duration:.22s}
+  .part{
+    margin:0 0 18px; font-size:1.05rem; font-weight:600; color:var(--brand);
+    display:flex; align-items:center; gap:12px;
+  }
+  .part::before{content:""; width:28px; height:3px; border-radius:3px; background:var(--accent)}
+  .title{
+    margin:0 0 22px; font-family:"Bricolage Grotesque", "Arial Narrow", sans-serif;
+    font-weight:800; font-size:clamp(2.4rem,4.7vw,4.6rem); line-height:.98; letter-spacing:-.025em;
+    font-variation-settings:"opsz" 96; text-wrap:balance;
+  }
+  .body{margin:0; font-size:clamp(1.05rem,1.35vw,1.3rem); line-height:1.55; color:var(--ink-soft); max-width:34ch; text-wrap:pretty}
+
+  .nav{
+    position:fixed; left:clamp(24px,6vw,104px); bottom:calc(clamp(20px,5vh,48px) + env(safe-area-inset-bottom,0px));
+    display:flex; align-items:center; gap:14px;
+  }
+  .btn{
+    width:48px; height:48px; border-radius:50%; border:1px solid var(--line); background:var(--chip); color:var(--chip-ink);
+    display:grid; place-items:center; cursor:pointer; transition:transform .15s ease, opacity .2s ease;
+  }
+  .btn:hover{transform:scale(1.06)}
+  .btn:disabled{opacity:.35; cursor:default; transform:none}
+  .btn:focus-visible, .seg:focus-visible, .fs:focus-visible{outline:3px solid var(--accent); outline-offset:3px}
+  .btn svg{width:20px; height:20px}
+  .track{display:flex; gap:6px; margin-left:6px}
+  .seg{width:26px; height:6px; border-radius:6px; border:0; padding:0; background:var(--track); cursor:pointer; transition:background .3s ease, width .3s ease}
+  .seg[aria-current="step"]{background:var(--accent); width:44px}
+  .count{font-variant-numeric:tabular-nums; font-weight:600; color:var(--ink-soft); min-width:3.2em; margin-left:4px}
+
+  .fs{
+    position:fixed; right:clamp(16px,3vw,32px); top:calc(clamp(16px,3vh,28px) + env(safe-area-inset-top,0px));
+    width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--chip); color:var(--chip-ink);
+    display:grid; place-items:center; cursor:pointer;
+  }
+  .fs svg{width:18px;height:18px}
+  .hint{
+    position:fixed; right:calc(clamp(16px,3vw,32px) + 56px); top:calc(clamp(16px,3vh,28px) + env(safe-area-inset-top,0px));
+    height:42px; display:flex; align-items:center; font-size:.92rem; color:var(--ink-soft); transition:opacity .6s ease;
+  }
+  .hint.gone{opacity:0}
+  .note{
+    position:fixed; right:clamp(16px,3vw,32px); bottom:calc(clamp(20px,5vh,48px) + env(safe-area-inset-bottom,0px));
+    font-size:.82rem; color:var(--ink-soft); opacity:.8; max-width:30ch; text-align:right;
+  }
+  .labels{position:fixed; inset:0; pointer-events:none}
+  .chip{
+    position:absolute; left:0; top:0; white-space:nowrap; padding:7px 14px; border-radius:999px;
+    background:var(--chip); color:var(--chip-ink); border:1px solid var(--line);
+    font-weight:600; font-size:.95rem; box-shadow:0 6px 18px rgba(10,30,70,.12);
+    opacity:0; will-change:transform,opacity;
+  }
+  .chip::before{content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent); margin-right:8px; vertical-align:1px}
+  .fallback{position:fixed; inset:auto 24px 120px 24px; color:var(--ink-soft)}
+
+  @media (max-width:760px), (max-aspect-ratio:9/10){
+    .panel{left:22px; right:22px; width:auto; top:auto; bottom:calc(92px + env(safe-area-inset-bottom,0px)); transform:none}
+    .title{font-size:clamp(2rem,8.4vw,2.8rem); margin-bottom:12px}
+    .part{margin-bottom:10px; font-size:.95rem}
+    .body{font-size:1rem; line-height:1.5}
+    .nav{left:22px; right:22px; bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+    .seg{width:18px} .seg[aria-current="step"]{width:30px}
+    .note{display:none}
+    .hint{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .panel > *{transition-duration:.01s !important}
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-label="Frasco 3D de Desconectina. Haz clic para avanzar."></canvas>
+<div class="labels" id="labels"></div>
+
+<section class="panel" id="panel" aria-live="polite">
+  <p class="part" id="part"></p>
+  <h1 class="title" id="title"></h1>
+  <p class="body" id="body"></p>
+</section>
+
+<nav class="nav" aria-label="Navegación de la presentación">
+  <button class="btn" id="prev" aria-label="Anterior">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <button class="btn" id="next" aria-label="Siguiente">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+  <div class="track" id="track"></div>
+  <span class="count" id="count"></span>
+</nav>
+
+<span class="hint" id="hint">Usa las flechas del teclado o haz clic en el frasco</span>
+<button class="fs" id="fs" aria-label="Pantalla completa">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+</button>
+<p class="note">Producto ficticio, creado para un ejercicio creativo.</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  /* ---------- Contenido (cambia el nombre aquí) ---------- */
+  const NAME = 'Desconectina';
+  const FRONT = {p:[0,1.25,4.5], t:[0,1.25,0]};
+  const FAR   = {p:[0,2.1,10.5], t:[0,1.8,0]};
+  const slides = [
+    {part:'Novartis presenta', title:NAME+'®',
+     body:'El primer tratamiento para el síndrome de adicción a las redes sociales.',
+     cam:FAR, rot:0, spin:true},
+    {part:'La tapa', title:'Cierre a prueba de scroll',
+     body:'Presione y gire. Así de fácil debería ser silenciar las notificaciones. La primera dosis empieza antes de abrir el frasco: con la decisión de desconectarse.',
+     cam:{p:[0,5.7,2.5], t:[0,3.4,0]}, rot:0},
+    {part:'La etiqueta', title:'500 mg de presencia',
+     body:'Cada cápsula contiene atención concentrada, conversación real y 0 % de FOMO. Una al día, con un vaso de agua y cero notificaciones.',
+     cam:FRONT, rot:0},
+    {part:'Mecanismo de acción', title:'Reinicia el circuito de recompensa',
+     body:NAME+' reduce la necesidad de buscar likes y devuelve el placer a lo real: una charla, un partido, un atardecer sin filtro.',
+     cam:FRONT, rot:-Math.PI/2},
+    {part:'Las cápsulas', title:'Cada dosis, un momento recuperado',
+     body:'Sin pantallas de por medio, cada cápsula libera tiempo para lo que de verdad importa.',
+     cam:{p:[0,4.6,8.6], t:[0,3.2,0]}, rot:0.35, cap:1, pills:1},
+    {part:'Efectos secundarios', title:'Puede causar felicidad',
+     body:'Cenas más largas, libros terminados, noches de sueño completas… y descubrir que su familia es bastante interesante.',
+     cam:FRONT, rot:Math.PI/2},
+    {part:'Nuestra promesa', title:'Menos scroll, más vida.',
+     body:NAME+' no está en contra de la tecnología. Está a favor de las personas. Porque en Novartis reimaginamos la medicina, incluso para las enfermedades del siglo XXI.',
+     cam:FAR, rot:0, spin:true}
+  ];
+  const CHIP_TEXT = ['Más conversaciones','Más horas de sueño','Más foco','Más atardeceres'];
+
+  /* ---------- UI ---------- */
+  const $ = id => document.getElementById(id);
+  const panel=$('panel'), partEl=$('part'), titleEl=$('title'), bodyEl=$('body');
+  const prevBtn=$('prev'), nextBtn=$('next'), track=$('track'), count=$('count'), hint=$('hint');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  slides.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='seg'; b.setAttribute('aria-label','Ir a la diapositiva '+(i+1)+': '+s.part);
+    b.addEventListener('click',()=>go(i));
+    track.appendChild(b);
+  });
+  let swapTimer=null;
+  function fillText(i){
+    const s=slides[i]; partEl.textContent=s.part; titleEl.textContent=s.title; bodyEl.textContent=s.body;
+  }
+  function updateUI(i, first){
+    [...track.children].forEach((b,k)=>{ if(k===i) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+    count.textContent=(i+1)+' / '+slides.length;
+    prevBtn.disabled = i===0; nextBtn.disabled = i===slides.length-1;
+    if(first){ fillText(i); return; }
+    panel.classList.add('out');
+    clearTimeout(swapTimer);
+    swapTimer=setTimeout(()=>{ fillText(i); panel.classList.remove('out'); }, reduce?10:240);
+  }
+
+  /* ---------- Escena 3D ---------- */
+  const canvas=$('scene');
+  let renderer;
+  try{
+    renderer=new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+  }catch(e){
+    const f=document.createElement('p'); f.className='fallback';
+    f.textContent='Este navegador no puede mostrar el frasco en 3D. Abre la presentación en Chrome, Edge o Safari actualizados.';
+    document.body.appendChild(f);
+  }
+
+  let current=0;
+  function go(i){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    if(i===current) return;
+    current=i;
+    hint.classList.add('gone');
+    updateUI(i);
+    if(renderer) startTween(i, false);
+  }
+  prevBtn.addEventListener('click',()=>go(current-1));
+  nextBtn.addEventListener('click',()=>go(current+1));
+  window.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ e.preventDefault(); go(current+1); }
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); go(current-1); }
+    else if(e.key==='Home'){ go(0); } else if(e.key==='End'){ go(slides.length-1); }
+    else if(e.key==='f' || e.key==='F'){ toggleFS(); }
+  });
+  function toggleFS(){
+    try{
+      if(document.fullscreenElement){ document.exitFullscreen(); }
+      else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen().catch(()=>{}); }
+    }catch(e){}
+  }
+  $('fs').addEventListener('click',toggleFS);
+  if(!document.documentElement.requestFullscreen) $('fs').style.display='none';
+
+  updateUI(0,true);
+  if(!renderer) return;
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.05;
+  renderer.setClearColor(0x000000,0);
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(30,1,0.1,100);
+  const maxAniso=renderer.capabilities.getMaxAnisotropy();
+
+  /* Estudio fotográfico para los reflejos */
+  (function makeEnv(){
+    const env=new THREE.Scene();
+    env.add(new THREE.Mesh(new THREE.BoxGeometry(24,24,24), new THREE.MeshBasicMaterial({color:0x56607a, side:THREE.BackSide})));
+    const box=(w,h,pos,rot,intensity,color)=>{
+      const m=new THREE.MeshBasicMaterial({color:new THREE.Color(color||0xffffff).multiplyScalar(intensity), side:THREE.DoubleSide});
+      const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m); p.position.set(...pos); p.rotation.set(...rot); env.add(p);
+    };
+    box(5,12,[-8,2,3],[0,Math.PI/2,0],6);
+    box(3,12,[8,2,-1],[0,-Math.PI/2,0],3.5);
+    box(12,5,[0,10,0],[Math.PI/2,0,0],4);
+    box(10,6,[0,2,-10],[0,0,0],1.6,0xbcd0ff);
+    box(4,9,[3,1,9],[0,Math.PI,0],2.2,0xffe6cc);
+    const pm=new THREE.PMREMGenerator(renderer);
+    scene.environment=pm.fromScene(env,0.035).texture;
+    pm.dispose();
+  })();
+  scene.add(new THREE.HemisphereLight(0xffffff,0x8090b0,0.35));
+  const key=new THREE.DirectionalLight(0xffffff,0.9); key.position.set(-4,8,6); scene.add(key);
+
+  /* ---------- Texturas dibujadas ---------- */
+  const NAVY='#0A3A88', ORANGE='#F08A24';
+  const DISPLAY='"Bricolage Grotesque", "Arial Narrow", Arial, sans-serif';
+  const TEXT='"Figtree", "Segoe UI", Arial, sans-serif';
+  function font(g,w,size,fam){ g.font=w+' '+size+'px '+fam; }
+  function fitFont(g,text,w,maxSize,fam,maxW){
+    let s=maxSize; font(g,w,s,fam);
+    while(g.measureText(text).width>maxW && s>10){ s-=2; font(g,w,s,fam); }
+    return s;
+  }
+  function powerIcon(g,x,y,r,color,lw){
+    g.save(); g.strokeStyle=color; g.lineWidth=lw; g.lineCap='round';
+    g.beginPath(); g.arc(x,y,r,-Math.PI/2+0.75,Math.PI*1.5-0.75); g.stroke();
+    g.beginPath(); g.moveTo(x,y-r*1.15); g.lineTo(x,y-r*0.15); g.stroke(); g.restore();
+  }
+  function roundRect(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+  function arrow(g,x,y,up,color){
+    g.save(); g.fillStyle=color; g.strokeStyle=color; g.lineWidth=9; g.lineCap='round';
+    const d=up?-1:1; g.beginPath(); g.moveTo(x,y-22*d); g.lineTo(x,y+14*d); g.stroke();
+    g.beginPath(); g.moveTo(x-17,y+6*d); g.lineTo(x+17,y+6*d); g.lineTo(x,y+28*d); g.closePath(); g.fill(); g.restore();
+  }
+
+  const labelCanvas=document.createElement('canvas'); labelCanvas.width=4096; labelCanvas.height=1134;
+  function drawLabel(){
+    const g=labelCanvas.getContext('2d'), W=labelCanvas.width, H=labelCanvas.height;
+    let grd=g.createLinearGradient(0,0,0,H);
+    grd.addColorStop(0,'#0E4BA8'); grd.addColorStop(.55,NAVY); grd.addColorStop(1,'#062659');
+    g.fillStyle=grd; g.fillRect(0,0,W,H);
+    // ondas de señal que se apagan
+    g.save(); g.lineWidth=9;
+    for(let k=1;k<=8;k++){ g.strokeStyle='rgba(255,255,255,'+(0.075-k*0.007)+')'; g.beginPath(); g.arc(W*.5,H*1.32,240*k,Math.PI*1.12,Math.PI*1.88); g.stroke(); }
+    g.restore();
+    g.fillStyle='#F4F7FC'; g.fillRect(0,0,W,26); g.fillRect(0,H-26,W,26);
+    g.fillStyle=ORANGE; g.fillRect(0,H-44,W,14);
+    g.textAlign='center'; g.textBaseline='middle';
+
+    // Frente
+    let cx=W*.5;
+    powerIcon(g,cx,165,48,ORANGE,13);
+    g.fillStyle='#B4CAF3'; fitFont(g,'Para el síndrome de adicción a las redes sociales',600,44,TEXT,900);
+    g.fillText('Para el síndrome de adicción a las redes sociales',cx,280);
+    g.fillStyle='#FFFFFF'; const ns=fitFont(g,NAME,800,196,DISPLAY,860);
+    const nw=g.measureText(NAME).width; g.fillText(NAME,cx-ns*0.12,445);
+    font(g,700,Math.round(ns*.36),DISPLAY); g.fillText('®',cx-ns*0.12+nw/2+ns*0.2,385);
+    g.fillStyle='#E3EBFA'; font(g,500,60,TEXT); g.fillText('Cápsulas de 500 mg',cx,585);
+    font(g,700,62,DISPLAY); const tag='Menos scroll, más vida.'; const tw=g.measureText(tag).width;
+    g.fillStyle=ORANGE; roundRect(g,cx-tw/2-52,660,tw+104,112,56); g.fill();
+    g.fillStyle='#0A2E6E'; g.fillText(tag,cx,718);
+    g.fillStyle='#A3B8E0'; font(g,500,40,TEXT); g.fillText('Vía oral     |     30 cápsulas     |     Uso diario',cx,905);
+
+    // Lado derecho: modo de uso y mecanismo
+    cx=W*.75; g.fillStyle='#FFFFFF'; font(g,700,64,DISPLAY); g.fillText('Modo de uso',cx,170);
+    g.fillStyle='#DCE6F8'; font(g,500,46,TEXT);
+    g.fillText('Tome 1 cápsula al día con un vaso',cx,262); g.fillText('de agua y cero notificaciones.',cx,322);
+    g.strokeStyle='rgba(255,255,255,.22)'; g.lineWidth=4; g.beginPath(); g.moveTo(cx-340,392); g.lineTo(cx+340,392); g.stroke();
+    g.fillStyle='#FFFFFF'; font(g,700,54,DISPLAY); g.fillText('Mecanismo de acción',cx,470);
+    const rows=[['Necesidad de likes',false],['Conversaciones reales',true],['Atención y foco',true],['Horas de sueño',true]];
+    g.textAlign='left'; font(g,500,50,TEXT);
+    rows.forEach((r,k)=>{ const y=568+k*82; arrow(g,cx-300,y,r[1],r[1]?'#9CC0FF':ORANGE); g.fillStyle='#FFFFFF'; g.fillText(r[0],cx-250,y+2); });
+
+    // Lado izquierdo: efectos secundarios
+    cx=W*.25; g.textAlign='center'; g.fillStyle='#FFFFFF'; font(g,700,64,DISPLAY);
+    g.fillText('Efectos secundarios',cx,170); g.fillText('frecuentes',cx,240);
+    const fx=['Cenas más largas','Libros terminados','Noches de sueño completas','Atardeceres sin filtro','Una familia más interesante'];
+    g.textAlign='left'; font(g,500,48,TEXT);
+    fx.forEach((t,k)=>{ const y=352+k*80; g.fillStyle=ORANGE; g.beginPath(); g.arc(cx-318,y,11,0,Math.PI*2); g.fill(); g.fillStyle='#FFFFFF'; g.fillText(t,cx-290,y+2); });
+    g.textAlign='center'; g.fillStyle=ORANGE; font(g,600,42,TEXT);
+    g.fillText('Si la felicidad persiste,',cx,792); g.fillText('consulte a sus amigos.',cx,848);
+
+    // Parte trasera: lote y código de barras
+    g.textAlign='left'; g.fillStyle='#A3B8E0'; font(g,500,32,TEXT);
+    ['Lote: OFF-24/7','Vence: nunca, si se usa a diario','Producto ficticio para','un ejercicio creativo.'].forEach((t,k)=>g.fillText(t,96,330+k*52));
+    g.fillStyle='#F4F7FC'; roundRect(g,3640,300,330,300,18); g.fill();
+    let seed=7, bx=3672; const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
+    g.fillStyle='#0A2E6E';
+    while(bx<3936){ const w=3+Math.floor(rnd()*4)*3; g.fillRect(bx,330,w,200); bx+=w+3+Math.floor(rnd()*3)*3; }
+    g.textAlign='center'; font(g,600,30,TEXT); g.fillText('7 702 4 7 0 FF 001',3805,566);
+  }
+
+  const capCanvas=document.createElement('canvas'); capCanvas.width=capCanvas.height=1024;
+  function drawCap(){
+    const g=capCanvas.getContext('2d'), S=1024, c=S/2;
+    g.clearRect(0,0,S,S);
+    const grd=g.createRadialGradient(c,c*0.85,40,c,c,c);
+    grd.addColorStop(0,'#1A56B5'); grd.addColorStop(1,'#0A3278');
+    g.fillStyle=grd; g.beginPath(); g.arc(c,c,c,0,Math.PI*2); g.fill();
+    g.strokeStyle='rgba(255,255,255,.18)'; g.lineWidth=6;
+    g.beginPath(); g.arc(c,c,470,0,Math.PI*2); g.stroke();
+    g.beginPath(); g.arc(c,c,318,0,Math.PI*2); g.stroke();
+    // texto circular
+    const txt='Presione y gire   •   Apague y viva   •   ';
+    font(g,700,60,DISPLAY); g.fillStyle='rgba(255,255,255,.92)'; g.textAlign='center'; g.textBaseline='middle';
+    const r=394, circ=2*Math.PI*r; let total=0; for(const ch of txt) total+=g.measureText(ch).width;
+    const reps=Math.max(1,Math.floor(circ/total)); const spacing=(circ-total*reps)/(txt.length*reps);
+    let a=0;
+    for(let k=0;k<reps;k++) for(const ch of txt){
+      const w=g.measureText(ch).width+spacing; const da=w/r;
+      g.save(); g.translate(c,c); g.rotate(a+da/2); g.fillText(ch,0,-r); g.restore(); a+=da;
+    }
+    powerIcon(g,c,c-40,92,ORANGE,24);
+    g.fillStyle='#FFFFFF'; font(g,600,56,TEXT); g.fillText('Desconéctese',c,c+130);
+  }
+
+  const shadowCanvas=document.createElement('canvas'); shadowCanvas.width=shadowCanvas.height=256;
+  (function(){ const g=shadowCanvas.getContext('2d'); const grd=g.createRadialGradient(128,128,0,128,128,128);
+    grd.addColorStop(0,'rgba(10,25,60,.42)'); grd.addColorStop(.45,'rgba(10,25,60,.2)'); grd.addColorStop(1,'rgba(10,25,60,0)');
+    g.fillStyle=grd; g.fillRect(0,0,256,256); })();
+
+  drawLabel(); drawCap();
+  const labelTex=new THREE.CanvasTexture(labelCanvas); labelTex.encoding=THREE.sRGBEncoding; labelTex.anisotropy=maxAniso;
+  const capTex=new THREE.CanvasTexture(capCanvas); capTex.encoding=THREE.sRGBEncoding; capTex.anisotropy=maxAniso;
+  const redraw=()=>{ drawLabel(); drawCap(); labelTex.needsUpdate=true; capTex.needsUpdate=true; };
+  if(document.fonts){
+    Promise.all([
+      document.fonts.load('800 120px "Bricolage Grotesque"'),
+      document.fonts.load('700 60px "Bricolage Grotesque"'),
+      document.fonts.load('500 40px "Figtree"'),
+      document.fonts.load('600 40px "Figtree"')
+    ]).then(redraw).catch(()=>{});
+    document.fonts.ready.then(redraw);
+  }
+
+  /* ---------- Frasco ---------- */
+  const V=(x,y)=>new THREE.Vector2(x,y);
+  const bottle=new THREE.Group(); scene.add(bottle);
+
+  const plastic=new THREE.MeshPhysicalMaterial({color:0xf3f5f9, roughness:.3, metalness:0, clearcoat:1, clearcoatRoughness:.12, side:THREE.DoubleSide});
+  const bodyPts=[[0,0],[.82,0],[.93,.02],[.98,.07],[1,.16],[1,2.32],[.99,2.47],[.955,2.6],[.89,2.71],[.8,2.8],[.7,2.86],[.64,2.9],[.625,2.95],[.625,3.32],[.61,3.36],[.585,3.36],[.58,3.3],[.58,2.98]].map(p=>V(p[0],p[1]));
+  bottle.add(new THREE.Mesh(new THREE.LatheGeometry(bodyPts,160),plastic));
+
+  const hole=new THREE.Mesh(new THREE.CircleGeometry(.58,64), new THREE.MeshStandardMaterial({color:0x1b2440, roughness:.9}));
+  hole.rotation.x=-Math.PI/2; hole.position.y=3.0; bottle.add(hole);
+  [3.05,3.15,3.25].forEach(y=>{ const t=new THREE.Mesh(new THREE.TorusGeometry(.626,.016,10,120),plastic); t.rotation.x=Math.PI/2; t.position.y=y; bottle.add(t); });
+
+  const labelMat=new THREE.MeshPhysicalMaterial({map:labelTex, roughness:.38, clearcoat:.7, clearcoatRoughness:.2});
+  const label=new THREE.Mesh(new THREE.CylinderGeometry(1.006,1.006,1.75,200,1,true,Math.PI,Math.PI*2),labelMat);
+  label.position.y=1.25; bottle.add(label);
+
+  // Tapa
+  const cap=new THREE.Group(); bottle.add(cap);
+  const capMat=new THREE.MeshPhysicalMaterial({color:0x0b3a8f, roughness:.34, clearcoat:1, clearcoatRoughness:.15, side:THREE.DoubleSide});
+  const capPts=[[0,.65],[.6,.65],[.66,.645],[.695,.63],[.715,.605],[.725,.57],[.728,.52],[.728,.06],[.722,.015],[.705,0],[.66,0],[.645,.03],[.645,.6]].map(p=>V(p[0],p[1]));
+  cap.add(new THREE.Mesh(new THREE.LatheGeometry(capPts,160),capMat));
+  const ridgeGeo=new THREE.BoxGeometry(.026,.42,.03);
+  for(let i=0;i<84;i++){ const a=i/84*Math.PI*2; const m=new THREE.Mesh(ridgeGeo,capMat); m.position.set(Math.sin(a)*.733,.31,Math.cos(a)*.733); m.rotation.y=a; cap.add(m); }
+  const ring=new THREE.Mesh(new THREE.CylinderGeometry(.732,.732,.05,160,1,true), new THREE.MeshPhysicalMaterial({color:0xf08a24, roughness:.3, clearcoat:1, side:THREE.DoubleSide}));
+  ring.position.y=.045; cap.add(ring);
+  const top=new THREE.Mesh(new THREE.CircleGeometry(.6,128), new THREE.MeshPhysicalMaterial({map:capTex, roughness:.32, clearcoat:1, clearcoatRoughness:.12, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2}));
+  top.rotation.x=-Math.PI/2; top.position.y=.652; cap.add(top);
+  cap.position.y=2.95;
+
+  // Sombra de contacto
+  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.6,3.6), new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas), transparent:true, depthWrite:false}));
+  shadow.rotation.x=-Math.PI/2; shadow.position.y=.001; scene.add(shadow);
+
+  /* ---------- Cápsulas ---------- */
+  function half(r,len,mat){
+    const pts=[]; for(let i=0;i<=18;i++){ const a=i/18*Math.PI/2; pts.push(V(Math.max(Math.sin(a)*r,0.0001),len+Math.cos(a)*r)); }
+    pts.push(V(r,0)); pts.push(V(0.0001,0));
+    return new THREE.Mesh(new THREE.LatheGeometry(pts,48),mat);
+  }
+  const pillA=new THREE.MeshPhysicalMaterial({color:0xf08a24, roughness:.22, clearcoat:1, clearcoatRoughness:.08, side:THREE.DoubleSide});
+  const pillB=new THREE.MeshPhysicalMaterial({color:0xfafbfd, roughness:.22, clearcoat:1, clearcoatRoughness:.08, side:THREE.DoubleSide});
+  const pillsGroup=new THREE.Group(); scene.add(pillsGroup);
+  const N=8, pills=[];
+  for(let i=0;i<N;i++){
+    const p=new THREE.Group();
+    p.add(half(.13,.15,pillA));
+    const b=half(.136,.14,pillB); b.rotation.x=Math.PI; p.add(b);
+    const inner=new THREE.Group(); inner.add(p); pillsGroup.add(inner);
+    pills.push({obj:inner, base:i/N*Math.PI*2, R:1.7+(i%3)*.08, y:3.95+((i%2)?.28:-.12),
+      rx:Math.random()*Math.PI, rz:Math.random()*Math.PI, sp:.5+Math.random()*.5});
+    inner.visible=false;
+  }
+  const chips=CHIP_TEXT.map(t=>{ const d=document.createElement('div'); d.className='chip'; d.textContent=t; $('labels').appendChild(d); return d; });
+  const chipPill=[0,2,4,6];
+
+  /* ---------- Cámara y transiciones ---------- */
+  const state={p:new THREE.Vector3(...slides[0].cam.p), t:new THREE.Vector3(...slides[0].cam.t), rot:0, cap:0, pills:0};
+  let tw=null;
+  const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+  function startTween(i){
+    const s=slides[i]; const TWO=Math.PI*2;
+    let endRot=s.rot||0; endRot+=Math.round((state.rot-endRot)/TWO)*TWO;
+    tw={t0:performance.now(), dur:reduce?450:1700,
+      from:{p:state.p.clone(), t:state.t.clone(), rot:state.rot, cap:state.cap, pills:state.pills},
+      to:{p:new THREE.Vector3(...s.cam.p), t:new THREE.Vector3(...s.cam.t), rot:endRot, cap:s.cap||0, pills:s.pills||0}};
+  }
+
+  let mobile=false;
+  function layout(){
+    const w=window.innerWidth, h=window.innerHeight;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/h;
+    mobile = w<=760 || w/h<0.9;
+    camera.fov = mobile?36:30;
+    if(mobile) camera.setViewOffset(w,h,0,h*0.2,w,h);
+    else camera.setViewOffset(w,h,-w*0.2,0,w,h);
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize',layout); layout();
+
+  // parallax suave con el puntero
+  const par={x:0,y:0,tx:0,ty:0};
+  window.addEventListener('pointermove',e=>{ par.tx=(e.clientX/window.innerWidth-.5); par.ty=(e.clientY/window.innerHeight-.5); });
+
+  // clic y gestos táctiles
+  let downX=null, downY=null;
+  canvas.addEventListener('pointerdown',e=>{ downX=e.clientX; downY=e.clientY; });
+  canvas.addEventListener('pointerup',e=>{
+    if(downX===null) return;
+    const dx=e.clientX-downX, dy=e.clientY-downY; downX=null;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) go(current+(dx<0?1:-1));
+    else if(Math.abs(dx)<8 && Math.abs(dy)<8) go(current+1);
+  });
+
+  const tmp=new THREE.Vector3(), camPos=new THREE.Vector3();
+  let last=performance.now(), time=0, orbit=0, capSpin=0;
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000); last=now; time+=dt;
+    if(tw){
+      const k=Math.min(1,(now-tw.t0)/tw.dur), e=ease(k);
+      state.p.lerpVectors(tw.from.p,tw.to.p,e); state.t.lerpVectors(tw.from.t,tw.to.t,e);
+      state.rot=tw.from.rot+(tw.to.rot-tw.from.rot)*e;
+      state.cap=tw.from.cap+(tw.to.cap-tw.from.cap)*e;
+      state.pills=tw.from.pills+(tw.to.pills-tw.from.pills)*e;
+      if(k>=1) tw=null;
+    } else if(slides[current].spin && !reduce){ state.rot+=dt*.35; }
+
+    // cámara
+    par.x+=(par.tx-par.x)*.05; par.y+=(par.ty-par.y)*.05;
+    const ds=mobile?1.45:1;
+    camPos.copy(state.p).sub(state.t).multiplyScalar(ds).add(state.t);
+    if(!reduce){ camPos.x+=par.x*.5; camPos.y-=par.y*.3; }
+    camera.position.copy(camPos); camera.lookAt(state.t);
+
+    // frasco
+    const bob=reduce?0:Math.sin(time*.9)*.035;
+    bottle.position.y=bob; pillsGroup.position.y=bob;
+    bottle.rotation.y=state.rot;
+    const sh=1-bob*1.5; shadow.scale.set(sh,sh,1); shadow.material.opacity=1-bob*3;
+
+    const c=state.cap;
+    capSpin+=dt*.5*c;
+    cap.position.y=2.95+c*1.7;
+    cap.rotation.set(c*.3, capSpin, -c*.12);
+
+    // cápsulas
+    if(state.pills>0.001) orbit+=dt*.22;
+    const w=window.innerWidth, h=window.innerHeight;
+    pills.forEach((p,i)=>{
+      let k=(state.pills-i*.06)/(1-.06*(N-1)); k=Math.max(0,Math.min(1,k)); k=ease(k);
+      p.obj.visible=k>.002;
+      if(!p.obj.visible) return;
+      const a=p.base+orbit;
+      const tx=Math.cos(a)*p.R, tz=Math.sin(a)*p.R, ty=p.y+Math.sin(time*1.2+i)*.07;
+      p.obj.position.set(tx*k, 3.05+(ty-3.05)*k+Math.sin(k*Math.PI)*.6, tz*k);
+      p.obj.scale.setScalar(.15+.85*k);
+      p.obj.rotation.set(p.rx+time*.6*p.sp, time*.4, p.rz);
+      p.k=k;
+    });
+    chips.forEach((chip,j)=>{
+      const p=pills[chipPill[j]];
+      if(!p.obj.visible){ chip.style.opacity=0; return; }
+      p.obj.getWorldPosition(tmp);
+      const front=Math.max(0,Math.min(1,(tmp.z/p.R+.15)/.6));
+      tmp.project(camera);
+      const x=(tmp.x*.5+.5)*w, y=(-tmp.y*.5+.5)*h;
+      chip.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) translate(-50%,-150%)';
+      chip.style.opacity=(front*p.k).toFixed(3);
+    });
+
+    renderer.render(scene,camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
